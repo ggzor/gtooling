@@ -1,31 +1,31 @@
 from functools import reduce
 
-def compose(functions_list):
+def compose_monoid(identity_function, binary_function):
     '''
-    Composes all the functions in the list starting with the rightmost.
+    Creates a function that composes a list of functions using binary_function from
+    right to left, starting with the identity_function.
     '''
+    def apply(current, next):
+        return lambda x: binary_function(next, current)(x)
 
-    def reverse_composition(f, g):
-        return lambda x: g(f(x))
+    return lambda functions_list: reduce(apply, reversed(functions_list), identity_function)
 
-    return reduce(reverse_composition, reversed(functions_list), lambda x: x)
+compose = compose_monoid(lambda x: x, 
+    lambda f, g: lambda x: 
+        f(g(x))
+)
 
-def composeif(functions_list):
-    '''
-    Composes conditionally the function of each (compose, function) pair in the list 
-    starting with the rightmost, only if bool(compose) == True.
-    '''
+composeif = compose_monoid(lambda x: x, 
+    lambda ft, g: lambda x: 
+        ft[1](g(x)) if ft[0] else g(x)
+)
 
-    def reverse_conditional_composition(f, gt):
-        return (lambda x: gt[1](f(x))) if gt[0] else f
+compose_and = compose_monoid(lambda x: True, 
+    lambda f, g: lambda x: 
+        f(x) and g(x)
+)
 
-    return reduce(reverse_conditional_composition, reversed(functions_list), lambda x: x)
-
-def compose_and(functions_list):
-    def compose_with(func):
-        def composition(f, g):
-            return lambda x: func(f(x), g(x))
-        
-        return composition
-
-    return reduce(compose_with(lambda a,b: a and b), functions_list, lambda x: True)
+compose_or = compose_monoid(lambda x: False, 
+    lambda f, g: lambda x: 
+        f(x) or g(x)
+)
