@@ -1,4 +1,4 @@
-from utils.composition import compose
+from utils.functional.composition import compose
 
 class TestCompose:
     def test_shouldBe_emptyList_when_emptyList(self):

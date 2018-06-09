@@ -1,4 +1,4 @@
-from utils.composition import composeif
+from utils.functional.composition import composeif
 
 class TestComposeIf:
     def test_shouldBe_identity_when_emptyList(self):
