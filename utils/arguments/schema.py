@@ -51,7 +51,7 @@ class ArgsSchema:
         return from_list(self, ls)
 
     def run(self, main, argv):
-        if len(argv) <= 1:
+        if len(argv) <= 1 and self.required:
            print(self)
         else:
             result = self.parse_list(argv[1:])
