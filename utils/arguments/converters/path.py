@@ -13,6 +13,14 @@ class validate:
         )
 
     @staticmethod
+    def non_existing(path):
+        return value_or_raise_if(
+            path.exists(),
+                "The path '{}' already exists.".format(path),
+            path
+        )
+
+    @staticmethod
     def isdirectory(path):
         return value_or_raise_if(
             not path.is_dir(),
